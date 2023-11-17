@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web</title>
+</head>
+<body>
+   
+    <div id="show">
+
+    </div>
+
+    <div id="productDetails">
+        <h2>Product Details</h2>
+        <div id="detailContent"></div>
+    </div>
+
+    <div id="cart">
+        <h2>Shopping Cart</h2>
+        <ul id="cartItems"></ul>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <div id="checkout">
+        <h2>Checkout</h2>
+        <div id="checkoutContent"></div>
+    </div>
+
+    <script>
+        let showProduct = document.getElementById('show');
+        let productDetails = document.getElementById('productDetails');
+        let detailContent = document.getElementById('detailContent');
+        let cartItemsList = document.getElementById('cartItems');
+        let checkoutContent = document.getElementById('checkoutContent');
+        let cart = [];
+
+        let product = {
+            "products": [
+                {
+                    "id": 1,
+                    "name": "Product 1",
+                    "price": 19.99,
+                    "description": "This is the description for Product 1.",
+                    "images": [
+                        "image1.jpg",
+                        "image2.jpg"
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Product 2",
+                    "price": 29.99,
+                    "description": "This is the description for Product 2.",
+                    "images": [
+                        "image3.jpg",
+                        "image4.jpg"
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Product 3",
+                    "price": 39.99,
+                    "description": "This is the description for Product 3.",
+                    "images": [
+                        "image5.jpg",
+                        "image6.jpg"
+                    ]
+                }
+            ]
+        }
+
+        for (let i = 0; i < product.products.length; i++) {
+            showProduct.innerHTML += `
+                <div>
+                    <h2>${product.products[i].name}</h2>
+                    <p>${product.products[i].description}</p>
+                    <p>Price: $${product.products[i].price}</p>
+                    <div>Images:</div>
+                    <ul>
+                        ${product.products[i].images.map(image => `<li><img src="${image}" alt="${product.products[i].name}"></li>`).join('')}
+                    </ul>
+                    <button onclick="showDetails(${product.products[i].id})">Show Details</button>
+                    <button onclick="addToCart(${product.products[i].id})">Add to Cart</button>
+                </div>
+                <hr>
+            `;
+        }
+
+        function showDetails(productId) {
+            let selectedProduct = product.products.find(product => product.id === productId);
+            if (selectedProduct) {
+                detailContent.innerHTML = `
+                    <h3>${selectedProduct.name}</h3>
+                    <p>${selectedProduct.description}</p>
+                    <p>Price: $${selectedProduct.price}</p>
+                    <div>Images:</div>
+                    <ul>
+                        ${selectedProduct.images.map(image => `<li><img src="${image}" alt="${selectedProduct.name}"></li>`).join('')}
+                    </ul>
+                `;
+            }
+        }
+
+        function addToCart(productId) {
+            let selectedProduct = product.products.find(product => product.id === productId);
+            if (selectedProduct) {
+                cart.push(selectedProduct);
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            cartItemsList.innerHTML = '';
+            cart.forEach(item => {
+                cartItemsList.innerHTML += `<li>${item.name} - $${item.price}</li>`;
+            });
+        }
+
+        function checkout() {
+            checkoutContent.innerHTML = `
+                <h3>Order Summary</h3>
+                <ul>
+                    ${cart.map(item => `<li>${item.name} - $${item.price}</li>`).join('')}
+                </ul>
+                <p>Total: $${calculateTotal()}</p>
+                <button onclick="confirmOrder()">Confirm Order</button>
+            `;
+        }
+
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+        }
+
+        function confirmOrder() {
+            alert('Order confirmed! Thank you for your purchase.');
+            // You can add additional logic here, such as clearing the cart or redirecting to a thank-you page.
+        }
+    </script>
+</body>
+</html>
